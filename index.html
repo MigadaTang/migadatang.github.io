@@ -89,8 +89,26 @@
         <p>注：本文简单记录本人在Kafka的学习过程</p>
 <h1 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h1><p>Kafka 是一个<strong>分布式</strong>的基于<strong>发布/订阅模式</strong>的消息队列（MQ），主要是用于大数据实时处理领域。</p>
 <p>个人到目前为止的话还没有系统使用过，主要是知道各个业务方可以通过将消息放入Kafka中，让其他业务方自己去获取，从而实现解耦合</p>
-<h2 id="Kafka是发布订阅模式的，那么还有其他什么模式？"><a href="#Kafka是发布订阅模式的，那么还有其他什么模式？" class="headerlink" title="Kafka是发布订阅模式的，那么还有其他什么模式？"></a>Kafka是发布订阅模式的，那么还有其他什么模式？</h2><p>点对点模式的，一个消息只有一个消费者</p>
-<h2 id="MQ的主要应用场景"><a href="#MQ的主要应用场景" class="headerlink" title="MQ的主要应用场景"></a>MQ的主要应用场景</h2><p>异步处理，比如给用户发送短信，本来是调用接口，现在是写个消息放入队列，自动取出来发送，实现<strong>解耦</strong></p>
+<h2 id="Kafka是发布订阅模式的，那么还有其他什么模式？"><a href="#Kafka是发布订阅模式的，那么还有其他什么模式？" class="headerlink" title="Kafka是发布订阅模式的，那么还有其他什么模式？"></a>Kafka是发布订阅模式的，那么还有其他什么模式？</h2><ol>
+<li><p>点对点模式的，一个消息只有一个消费者，如果要发给多个消费者那么只能发多次。</p>
+</li>
+<li><p>发布、订阅模式。同一个消息可以给多个消费者使用。消息生产者把消息发到topic（队列），数据传递到消费者有两种方式，第一种是由消费者进行<strong>长轮询</strong>，拉取数据，另外一种是队列主动推数据，因为消费者处理速率不一样，所以可能导致资源浪费。</p>
+</li>
+</ol>
+<h2 id="MQ的主要应用场景与好处"><a href="#MQ的主要应用场景与好处" class="headerlink" title="MQ的主要应用场景与好处"></a>MQ的主要应用场景与好处</h2><ol>
+<li><p><strong>解耦</strong>。异步处理，比如给用户发送短信，本来是调用接口，现在是写个消息放入队列，自动取出来发送，实现<strong>解耦</strong>.</p>
+</li>
+<li><p><strong>削峰</strong>。还可以实现流量削峰，可能有时候有活动突然请求量会很大，但是也不能花太多钱准备很多服务器，因为大多数时候是用不到的，所以可以先把消息放在Kafka中，慢慢处理，防止峰值调用接口压力过大，同时用尽量少的资源。</p>
+</li>
+<li><p><strong>可恢复性</strong>。当一部分组件失效的时候，可以把消息暂存在队列中，等服务恢复之后继续处理。</p>
+</li>
+</ol>
+<p>4.<strong>缓冲</strong>。缓冲，解决生产和消费处理速度不一致。</p>
+<h1 id="Kafka基础架构"><a href="#Kafka基础架构" class="headerlink" title="Kafka基础架构"></a>Kafka基础架构</h1><h2 id="生产者生产消息"><a href="#生产者生产消息" class="headerlink" title="生产者生产消息"></a>生产者生产消息</h2><p>一个生产者可以指定一个Topic生成消息，可以生成到多个Partition</p>
+<h2 id="Kafka集群管理消息"><a href="#Kafka集群管理消息" class="headerlink" title="Kafka集群管理消息"></a>Kafka集群管理消息</h2><p>服务器，运行着Kafka进行，组成集群。<br>一个Topic可以有多个Partition，每个Partition有Leader和Follower，当一个服务宕机的时候，可以把Followed提升为Leader。</p>
+<p>一个Topic的副本个数可以自己指定。</p>
+<h2 id="消费者消费消息"><a href="#消费者消费消息" class="headerlink" title="消费者消费消息"></a>消费者消费消息</h2><p>一个Partition只能被一个消费组里面的一个消费者消费。所以一个消费者组的消费者个数大于Partition数量是没有意义的。</p>
+<h2 id="ZooKeeper注册消息"><a href="#ZooKeeper注册消息" class="headerlink" title="ZooKeeper注册消息"></a>ZooKeeper注册消息</h2><p>可以用来注册集群的信息。<br>消费者挂了要能启动之后继续消费，所以要监控数据消费到哪里了。<br>这个监控的信息就保存在ZK中。</p>
 
       
     </div>
