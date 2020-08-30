@@ -105,10 +105,13 @@
 </ol>
 <p>4.<strong>缓冲</strong>。缓冲，解决生产和消费处理速度不一致。</p>
 <h1 id="Kafka基础架构"><a href="#Kafka基础架构" class="headerlink" title="Kafka基础架构"></a>Kafka基础架构</h1><h2 id="生产者生产消息"><a href="#生产者生产消息" class="headerlink" title="生产者生产消息"></a>生产者生产消息</h2><p>一个生产者可以指定一个Topic生成消息，可以生成到多个Partition</p>
-<h2 id="Kafka集群管理消息"><a href="#Kafka集群管理消息" class="headerlink" title="Kafka集群管理消息"></a>Kafka集群管理消息</h2><p>服务器，运行着Kafka进行，组成集群。<br>一个Topic可以有多个Partition，每个Partition有Leader和Follower，当一个服务宕机的时候，可以把Followed提升为Leader。</p>
+<h2 id="Kafka集群管理消息"><a href="#Kafka集群管理消息" class="headerlink" title="Kafka集群管理消息"></a>Kafka集群管理消息</h2><p>服务器，也就是代理（Broker），组成集群。<br>一个Topic可以有多个Partition，每个Partition有Leader和Follower，当一个服务宕机的时候，可以把Followed提升为Leader。</p>
 <p>一个Topic的副本个数可以自己指定。</p>
+<p>kafka消息存储在磁盘。</p>
 <h2 id="消费者消费消息"><a href="#消费者消费消息" class="headerlink" title="消费者消费消息"></a>消费者消费消息</h2><p>一个Partition只能被一个消费组里面的一个消费者消费。所以一个消费者组的消费者个数大于Partition数量是没有意义的。</p>
-<h2 id="ZooKeeper注册消息"><a href="#ZooKeeper注册消息" class="headerlink" title="ZooKeeper注册消息"></a>ZooKeeper注册消息</h2><p>可以用来注册集群的信息。<br>消费者挂了要能启动之后继续消费，所以要监控数据消费到哪里了。<br>这个监控的信息就保存在ZK中。</p>
+<h2 id="ZooKeeper注册消息"><a href="#ZooKeeper注册消息" class="headerlink" title="ZooKeeper注册消息"></a>ZooKeeper注册消息</h2><p>可以用来注册集群的信息。<br>消费者挂了要能启动之后继续消费，所以要监控数据消费到哪里了。<br>这个监控的信息就保存在ZK中（0.9版本之前），之后存在Kafka中的某个Topic中。</p>
+<h2 id="Topic和Log"><a href="#Topic和Log" class="headerlink" title="Topic和Log"></a>Topic和Log</h2><p>Topic是发布的消息的类别名。对于每个Topic，Kafka都会维护一个分区Log。如下图所示。<br><img src="/.com//offset.png"></p>
+<p>Kafka集群会保持所有的消息，无论是否被消费了，一直到他们过期。读取的offset可以由消费者控制，修改offset重新读取更早的消息。</p>
 
       
     </div>

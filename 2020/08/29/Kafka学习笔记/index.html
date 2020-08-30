@@ -14,10 +14,12 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="注：本文简单记录本人在Kafka的学习过程 基础概念Kafka 是一个分布式的基于发布&#x2F;订阅模式的消息队列（MQ），主要是用于大数据实时处理领域。 个人到目前为止的话还没有系统使用过，主要是知道各个业务方可以通过将消息放入Kafka中，让其他业务方自己去获取，从而实现解耦合 Kafka是发布订阅模式的，那么还有其他什么模式？ 点对点模式的，一个消息只有一个消费者，如果要发给多个消费者那么只能发多次">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/.com//offset.png">
 <meta property="article:published_time" content="2020-08-28T17:48:38.000Z">
-<meta property="article:modified_time" content="2020-08-29T14:55:00.228Z">
+<meta property="article:modified_time" content="2020-08-29T16:40:36.284Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/.com//offset.png">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -107,10 +109,13 @@
 </ol>
 <p>4.<strong>缓冲</strong>。缓冲，解决生产和消费处理速度不一致。</p>
 <h1 id="Kafka基础架构"><a href="#Kafka基础架构" class="headerlink" title="Kafka基础架构"></a>Kafka基础架构</h1><h2 id="生产者生产消息"><a href="#生产者生产消息" class="headerlink" title="生产者生产消息"></a>生产者生产消息</h2><p>一个生产者可以指定一个Topic生成消息，可以生成到多个Partition</p>
-<h2 id="Kafka集群管理消息"><a href="#Kafka集群管理消息" class="headerlink" title="Kafka集群管理消息"></a>Kafka集群管理消息</h2><p>服务器，运行着Kafka进行，组成集群。<br>一个Topic可以有多个Partition，每个Partition有Leader和Follower，当一个服务宕机的时候，可以把Followed提升为Leader。</p>
+<h2 id="Kafka集群管理消息"><a href="#Kafka集群管理消息" class="headerlink" title="Kafka集群管理消息"></a>Kafka集群管理消息</h2><p>服务器，也就是代理（Broker），组成集群。<br>一个Topic可以有多个Partition，每个Partition有Leader和Follower，当一个服务宕机的时候，可以把Followed提升为Leader。</p>
 <p>一个Topic的副本个数可以自己指定。</p>
+<p>kafka消息存储在磁盘。</p>
 <h2 id="消费者消费消息"><a href="#消费者消费消息" class="headerlink" title="消费者消费消息"></a>消费者消费消息</h2><p>一个Partition只能被一个消费组里面的一个消费者消费。所以一个消费者组的消费者个数大于Partition数量是没有意义的。</p>
-<h2 id="ZooKeeper注册消息"><a href="#ZooKeeper注册消息" class="headerlink" title="ZooKeeper注册消息"></a>ZooKeeper注册消息</h2><p>可以用来注册集群的信息。<br>消费者挂了要能启动之后继续消费，所以要监控数据消费到哪里了。<br>这个监控的信息就保存在ZK中。</p>
+<h2 id="ZooKeeper注册消息"><a href="#ZooKeeper注册消息" class="headerlink" title="ZooKeeper注册消息"></a>ZooKeeper注册消息</h2><p>可以用来注册集群的信息。<br>消费者挂了要能启动之后继续消费，所以要监控数据消费到哪里了。<br>这个监控的信息就保存在ZK中（0.9版本之前），之后存在Kafka中的某个Topic中。</p>
+<h2 id="Topic和Log"><a href="#Topic和Log" class="headerlink" title="Topic和Log"></a>Topic和Log</h2><p>Topic是发布的消息的类别名。对于每个Topic，Kafka都会维护一个分区Log。如下图所示。<br><img src="/.com//offset.png"></p>
+<p>Kafka集群会保持所有的消息，无论是否被消费了，一直到他们过期。读取的offset可以由消费者控制，修改offset重新读取更早的消息。</p>
 
       
     </div>
